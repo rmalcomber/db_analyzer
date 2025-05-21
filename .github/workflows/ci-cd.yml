@@ -1,5 +1,10 @@
 name: CI/CD Pipeline
 
+# Add permissions needed for creating releases
+permissions:
+  contents: write
+  packages: write
+
 on:
   push:
     branches: [main]
@@ -192,43 +197,12 @@ jobs:
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release and Upload Assets
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          release_name: DB Analyzer ${{ steps.get_version.outputs.VERSION }}
+          name: DB Analyzer ${{ steps.get_version.outputs.VERSION }}
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          artifacts: "db_analyzer-windows.zip,db_analyzer-macos.zip,db_analyzer-linux.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
           prerelease: false
-
-      - name: Upload Windows Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./db_analyzer-windows.zip
-          asset_name: db_analyzer-windows.zip
-          asset_content_type: application/zip
-
-      - name: Upload macOS Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./db_analyzer-macos.zip
-          asset_name: db_analyzer-macos.zip
-          asset_content_type: application/zip
-
-      - name: Upload Linux Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./db_analyzer-linux.zip
-          asset_name: db_analyzer-linux.zip
-          asset_content_type: application/zip
