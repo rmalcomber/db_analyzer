@@ -1,0 +1,207 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*' # Run workflow on version tags, e.g. v1.0.0
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Lint
+        run: deno lint
+
+      - name: Format Check
+        run: deno fmt --check
+
+      - name: Run Unit Tests
+        run: deno task test:unit
+
+      # Integration tests require a database, so we'll skip them in CI
+      # You could add a PostgreSQL service if needed
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    # Only run on tags or main branch
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Make build script executable
+        run: chmod +x build.sh
+
+      - name: Build binaries
+        run: ./build.sh
+
+      - name: Upload Windows binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: db_analyzer-windows
+          path: bin/windows/db_analyzer.exe
+
+      - name: Upload macOS binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: db_analyzer-macos
+          path: bin/macos/db_analyzer
+
+      - name: Upload Linux binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: db_analyzer-linux
+          path: bin/linux/db_analyzer
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    # Only run on tags
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Create Release Directories
+        run: |
+          mkdir -p release/windows
+          mkdir -p release/macos
+          mkdir -p release/linux
+
+      - name: Copy binaries to release directories
+        run: |
+          cp artifacts/db_analyzer-windows/db_analyzer.exe release/windows/
+          cp artifacts/db_analyzer-macos/db_analyzer release/macos/
+          cp artifacts/db_analyzer-linux/db_analyzer release/linux/
+          chmod +x release/macos/db_analyzer
+          chmod +x release/linux/db_analyzer
+
+      - name: Create README files
+        run: |
+          cat > release/windows/README.md << 'EOF'
+          # DB Analyzer for Windows
+
+          This is the Windows binary for DB Analyzer, a tool to generate Rust types from PostgreSQL databases.
+
+          ## Usage
+
+          1. Create a `.env` file in the same directory as the binary with your PostgreSQL connection string:
+             ```
+             DATABASE_URL=postgres://username:password@localhost:5432/database_name
+             ```
+
+          2. Run the binary:
+             ```
+             .\db_analyzer.exe
+             ```
+
+          3. For more options, run:
+             ```
+             .\db_analyzer.exe --help
+             ```
+          EOF
+
+          cat > release/macos/README.md << 'EOF'
+          # DB Analyzer for macOS
+
+          This is the macOS binary for DB Analyzer, a tool to generate Rust types from PostgreSQL databases.
+
+          ## Usage
+
+          1. Make the binary executable (if it isn't already):
+             ```
+             chmod +x db_analyzer
+             ```
+
+          2. Create a `.env` file in the same directory as the binary with your PostgreSQL connection string:
+             ```
+             DATABASE_URL=postgres://username:password@localhost:5432/database_name
+             ```
+
+          3. Run the binary:
+             ```
+             ./db_analyzer
+             ```
+
+          4. For more options, run:
+             ```
+             ./db_analyzer --help
+             ```
+          EOF
+
+          cat > release/linux/README.md << 'EOF'
+          # DB Analyzer for Linux
+
+          This is the Linux binary for DB Analyzer, a tool to generate Rust types from PostgreSQL databases.
+
+          ## Usage
+
+          1. Make the binary executable (if it isn't already):
+             ```
+             chmod +x db_analyzer
+             ```
+
+          2. Create a `.env` file in the same directory as the binary with your PostgreSQL connection string:
+             ```
+             DATABASE_URL=postgres://username:password@localhost:5432/database_name
+             ```
+
+          3. Run the binary:
+             ```
+             ./db_analyzer
+             ```
+
+          4. For more options, run:
+             ```
+             ./db_analyzer --help
+             ```
+          EOF
+
+      - name: Create ZIP archives
+        run: |
+          cd release/windows && zip -r ../../db_analyzer-windows.zip . && cd ../..
+          cd release/macos && zip -r ../../db_analyzer-macos.zip . && cd ../..
+          cd release/linux && zip -r ../../db_analyzer-linux.zip . && cd ../..
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: DB Analyzer ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          files: |
+            db_analyzer-windows.zip
+            db_analyzer-macos.zip
+            db_analyzer-linux.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

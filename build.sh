@@ -42,11 +42,7 @@ deno compile --allow-net --allow-read --allow-write --allow-env \
   --output bin/win/db_analyzer.exe \
   main.ts
 
-# Copy mappings.json to each platform directory
-echo "Copying mappings.json to each platform directory..."
-cp mappings.json bin/linux/
-cp mappings.json bin/mac/
-cp mappings.json bin/win/
+# No need to copy mappings.json as the application will generate it if it doesn't exist
 
 # Create README files for each platform
 echo "Creating README files..."
@@ -60,8 +56,9 @@ Usage:
   ./db_analyzer-arm64 [OPTIONS]   # For ARM64 systems
 
 Make sure to:
-1. Create a .env file with your DATABASE_URL
-2. Ensure mappings.json is in the same directory as the binary
+1. Create a .env file with your DATABASE_URL in the same directory as the binary
+
+Note: The application will automatically generate a default mappings.json file if one doesn't exist.
 
 For more information, run:
   ./db_analyzer-x86_64 --help
@@ -76,8 +73,9 @@ Usage:
   ./db_analyzer-arm64 [OPTIONS]   # For Apple Silicon Macs
 
 Make sure to:
-1. Create a .env file with your DATABASE_URL
-2. Ensure mappings.json is in the same directory as the binary
+1. Create a .env file with your DATABASE_URL in the same directory as the binary
+
+Note: The application will automatically generate a default mappings.json file if one doesn't exist.
 
 For more information, run:
   ./db_analyzer-x86_64 --help
@@ -91,8 +89,9 @@ Usage:
   db_analyzer.exe [OPTIONS]
 
 Make sure to:
-1. Create a .env file with your DATABASE_URL
-2. Ensure mappings.json is in the same directory as the binary
+1. Create a .env file with your DATABASE_URL in the same directory as the binary
+
+Note: The application will automatically generate a default mappings.json file if one doesn't exist.
 
 For more information, run:
   db_analyzer.exe --help
