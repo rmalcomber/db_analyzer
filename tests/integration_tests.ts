@@ -1,9 +1,9 @@
 import {
   assertEquals,
   assertStringIncludes,
-} from "https://deno.land/std@0.178.0/assert/mod.ts";
-import { join } from "https://deno.land/std@0.178.0/path/mod.ts";
-import { exists } from "https://deno.land/std@0.178.0/fs/exists.ts";
+} from "https://deno.land/std@0.220.1/assert/mod.ts";
+import { join } from "https://deno.land/std@0.220.1/path/mod.ts";
+import { exists } from "https://deno.land/std@0.220.1/fs/exists.ts";
 
 // Mock PostgreSQL client for testing
 // Define types for our mock database

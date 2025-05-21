@@ -1,7 +1,7 @@
-import { assertEquals } from "https://deno.land/std@0.178.0/assert/mod.ts";
-import { join } from "https://deno.land/std@0.178.0/path/mod.ts";
-import { exists } from "https://deno.land/std@0.178.0/fs/exists.ts";
-import { parse } from "https://deno.land/std@0.178.0/flags/mod.ts";
+import { assertEquals } from "https://deno.land/std@0.220.1/assert/mod.ts";
+import { join } from "https://deno.land/std@0.220.1/path/mod.ts";
+import { exists } from "https://deno.land/std@0.220.1/fs/exists.ts";
+import { parse } from "https://deno.land/std@0.220.1/flags/mod.ts";
 
 // Test the automatic generation of mappings.json
 Deno.test("Automatically generate mappings.json if it doesn't exist", async () => {

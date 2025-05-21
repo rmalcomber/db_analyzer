@@ -10,6 +10,10 @@
   },
   "imports": {
     "postgres": "https://deno.land/x/postgres@v0.17.0/mod.ts",
-    "dotenv": "https://deno.land/std/dotenv/mod.ts"
+    "dotenv": "https://deno.land/std@0.220.1/dotenv/mod.ts",
+    "@std/assert": "https://deno.land/std@0.220.1/assert/mod.ts",
+    "@std/path": "https://deno.land/std@0.220.1/path/mod.ts",
+    "@std/fs": "https://deno.land/std@0.220.1/fs/exists.ts",
+    "@std/flags": "https://deno.land/std@0.220.1/flags/mod.ts"
   }
 }

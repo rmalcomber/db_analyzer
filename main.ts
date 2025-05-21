@@ -1,8 +1,8 @@
-import { load } from "https://deno.land/std@0.178.0/dotenv/mod.ts";
+import { load } from "https://deno.land/std@0.220.1/dotenv/mod.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
-import { parse } from "https://deno.land/std@0.178.0/flags/mod.ts";
-import { join } from "https://deno.land/std@0.178.0/path/mod.ts";
-import { exists as _exists } from "https://deno.land/std@0.178.0/fs/exists.ts";
+import { parse } from "https://deno.land/std@0.220.1/flags/mod.ts";
+import { join } from "https://deno.land/std@0.220.1/path/mod.ts";
+import { exists as _exists } from "https://deno.land/std@0.220.1/fs/exists.ts";
 
 // Parse command-line arguments
 // Remove the '--' separator that Deno adds when using 'deno task start -- --arg value'

@@ -1,5 +1,5 @@
-import { assertEquals } from "https://deno.land/std@0.178.0/assert/mod.ts";
-import { parse } from "https://deno.land/std@0.178.0/flags/mod.ts";
+import { assertEquals } from "https://deno.land/std@0.220.1/assert/mod.ts";
+import { parse } from "https://deno.land/std@0.220.1/flags/mod.ts";
 
 // Import helper functions from main.ts
 // Note: We're using relative imports here
