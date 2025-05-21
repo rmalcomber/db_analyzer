@@ -58,19 +58,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: db_analyzer-windows
-          path: bin/windows/db_analyzer.exe
+          path: bin/win/db_analyzer.exe
 
       - name: Upload macOS binary
         uses: actions/upload-artifact@v4
         with:
           name: db_analyzer-macos
-          path: bin/macos/db_analyzer
+          path: bin/mac/db_analyzer-x86_64
 
       - name: Upload Linux binary
         uses: actions/upload-artifact@v4
         with:
           name: db_analyzer-linux
-          path: bin/linux/db_analyzer
+          path: bin/linux/db_analyzer-x86_64
 
   release:
     name: Create Release
@@ -96,8 +96,8 @@ jobs:
       - name: Copy binaries to release directories
         run: |
           cp artifacts/db_analyzer-windows/db_analyzer.exe release/windows/
-          cp artifacts/db_analyzer-macos/db_analyzer release/macos/
-          cp artifacts/db_analyzer-linux/db_analyzer release/linux/
+          cp artifacts/db_analyzer-macos/db_analyzer-x86_64 release/macos/db_analyzer
+          cp artifacts/db_analyzer-linux/db_analyzer-x86_64 release/linux/db_analyzer
           chmod +x release/macos/db_analyzer
           chmod +x release/linux/db_analyzer
 
