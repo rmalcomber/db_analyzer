@@ -19,7 +19,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.39.0
+          deno-version: v2.2.10
 
       - name: Lint
         run: deno lint
@@ -46,7 +46,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.39.0
+          deno-version: v2.2.10
 
       - name: Make build script executable
         run: chmod +x build.sh
