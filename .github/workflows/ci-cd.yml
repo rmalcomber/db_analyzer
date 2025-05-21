@@ -202,7 +202,7 @@ jobs:
           release_name: DB Analyzer ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
-          
+
       - name: Upload Windows Release Asset
         uses: actions/upload-release-asset@v1
         env:
@@ -212,7 +212,7 @@ jobs:
           asset_path: ./db_analyzer-windows.zip
           asset_name: db_analyzer-windows.zip
           asset_content_type: application/zip
-          
+
       - name: Upload macOS Release Asset
         uses: actions/upload-release-asset@v1
         env:
@@ -222,7 +222,7 @@ jobs:
           asset_path: ./db_analyzer-macos.zip
           asset_name: db_analyzer-macos.zip
           asset_content_type: application/zip
-          
+
       - name: Upload Linux Release Asset
         uses: actions/upload-release-asset@v1
         env:
