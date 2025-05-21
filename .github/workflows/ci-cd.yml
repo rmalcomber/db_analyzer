@@ -194,14 +194,41 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: DB Analyzer ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
-          files: |
-            db_analyzer-windows.zip
-            db_analyzer-macos.zip
-            db_analyzer-linux.zip
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          release_name: DB Analyzer ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          
+      - name: Upload Windows Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./db_analyzer-windows.zip
+          asset_name: db_analyzer-windows.zip
+          asset_content_type: application/zip
+          
+      - name: Upload macOS Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./db_analyzer-macos.zip
+          asset_name: db_analyzer-macos.zip
+          asset_content_type: application/zip
+          
+      - name: Upload Linux Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./db_analyzer-linux.zip
+          asset_name: db_analyzer-linux.zip
+          asset_content_type: application/zip
